@@ -23,10 +23,10 @@ public class User {
     @Column(unique = true, nullable = false, length = 50)
     private String ci; // cedula de identidad
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     private String apellido;
 
     @Column(unique = true, nullable = false, length = 50)
@@ -45,7 +45,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "usario_id"),
+            joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
@@ -58,13 +58,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "servicio_id")
     )
     private Set<Service> servicios = new HashSet<>();
-
-
-
-     
-
-    
-
 
 }
 
