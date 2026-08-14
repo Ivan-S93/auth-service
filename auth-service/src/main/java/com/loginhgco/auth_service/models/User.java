@@ -44,7 +44,7 @@ public class User {
     // Relacion muchos a muchos con roles
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles",
+            name = "usuario_roles",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -53,11 +53,11 @@ public class User {
     // Relacion muchos a muchos con servicios ( quirofano, nutricion, clinia medica, urgencias, etc)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "usuarios_servicios",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "servicio_id")
-    )
-    private Set<Service> servicios = new HashSet<>();
+        name = "usuario_servicios",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "servicio_id")
+        )
+    private Set<ServiceEntity> servicios = new HashSet<>();
 
 }
 
