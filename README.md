@@ -1,33 +1,38 @@
-🛡️ Auth Service - Módulo Centralizado de Autenticación
-Servicio REST centralizado de autenticación y autorización desarrollado en Java (Spring Boot), Spring Security y PostgreSQL. Diseñado como un microservicio desacoplado para ser integrado con múltiples sistemas de la institución.
+# Auth Service - Microservicio de Autenticación JWT
 
-🚀 Estado Actual del Proyecto
-El proyecto cuenta con la capa de autenticación completa y funcional, persistencia de datos en PostgreSQL, encriptación segura de contraseñas mediante BCrypt, manejo transaccional de relaciones Many-to-Many y endpoints REST totalmente validados.
+Servicio REST desacoplado de autenticación y autorización desarrollado con **Spring Boot**, **Spring Security** y **PostgreSQL**. Diseñado para ser integrado como módulo central de seguridad en múltiples sistemas institucionales.
 
-🛠️ Tecnologías Utilizadas
-Java 17+
+## Estado del Proyecto
 
-Spring Boot 3.x
+Capa de autenticación 100% funcional y probada:
+* Autenticación y registro con contraseñas encriptadas (**BCrypt**).
+* Persistencia en **PostgreSQL** con relaciones N:M (`user_roles`, `user_servicios`).
+* Generación, firma y validación de **Tokens JWT** activa.
+* Protección de rutas con filtro personalizado (`JwtAuthenticationFilter`).
 
-Spring Security (Autenticación y Control de Acceso)
+## Tecnologías Utilizadas
 
-Spring Data JPA / Hibernate (Persistencia de Datos)
+* **Java 17+ / 25**
+* **Spring Boot 3.x**
+* **Spring Security** (Autenticación y Control de Acceso)
+* **JJWT (io.jsonwebtoken)** (Manejo de Tokens JWT)
+* **Spring Data JPA / Hibernate** (Persistencia de Datos)
+* **PostgreSQL** (Base de Datos Relacional)
+* **Lombok** (Reducción de código boilerplate)
 
-PostgreSQL (Base de Datos Relacional)
+## 📁 Estructura Principal del Proyecto
 
-BCrypt (Encriptación de Contraseñas)
-
-Lombok (Reducción de código boilerplate)
-
-📁 Estructura del Proyecto
-Plaintext
+```text
 src/main/java/com/loginhgco/auth_service/
 ├── config/
+│   ├── ApplicationConfig.java       # UserDetailsService y Beans de Spring
 │   ├── DataInitializer.java         # Sembrado automático de roles, servicios y admin
-│   ├── PasswordEncoderConfig.java   # Bean de encriptación BCryptPasswordEncoder
-│   └── SecurityConfig.java          # Configuración de URLs públicas y deshabilitación de CSRF
+│   ├── JwtAuthenticationFilter.java # Filtro que intercepta y valida el Token JWT
+│   ├── JwtUtils.java                # Generación, firma y parseo de Tokens
+│   ├── PasswordEncoderConfig.java   # Bean de encriptación BCrypt
+│   └── SecurityConfig.java          # Configuración de URLs públicas/privadas y CSRF
 ├── controllers/
-│   └── AuthController.java          # Endpoints REST para /login y /register
+│   └── AuthController.java          # Endpoints REST (/login, /register)
 ├── dtos/
 │   ├── AuthResponse.java            # DTO de respuesta con datos del usuario y token
 │   ├── LoginRequest.java            # DTO de entrada para credenciales
@@ -44,19 +49,3 @@ src/main/java/com/loginhgco/auth_service/
 │   └── UserRepository.java
 └── service/
     └── AuthService.java             # Lógica de negocio (Login, Registro y Mapeo DTO)
-
-
-🗄️ Modelo de Datos (PostgreSQL)
-El sistema maneja un esquema con dos relaciones N:M (Muchos a Muchos):
-
-Usuarios y Roles (user_roles)
-
-Usuarios y Servicios (user_servicios)
-
-/////
-📌 Siguientes Pasos (Roadmap)
-[ ] Implementación de generación y firma de Tokens JWT (JwtUtils).
-
-[ ] Creación de filtro de autenticación por Token (JwtAuthenticationFilter).
-
-[ ] Implementación de Refresh Tokens.
