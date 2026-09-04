@@ -1,5 +1,6 @@
 package com.loginhgco.auth_service.service;
 
+import com.loginhgco.auth_service.config.JwtUtils; // 👈 Asegúrate de tener importado JwtUtils
 import com.loginhgco.auth_service.dtos.AuthResponse;
 import com.loginhgco.auth_service.dtos.LoginRequest;
 import com.loginhgco.auth_service.dtos.RegisterRequest;
@@ -10,10 +11,10 @@ import com.loginhgco.auth_service.repositories.RoleRepository;
 import com.loginhgco.auth_service.repositories.ServiceRepository;
 import com.loginhgco.auth_service.repositories.UserRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,16 +24,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class AuthService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ServiceRepository serviceRepository;
     private final PasswordEncoder passwordEncoder;
-    
-    // ------------- LOGIN -----------------
-        // Implementación de la lógica de autenticación
-        // Aquí puedes verificar las credenciales del usuario y generar un token JWT si es necesario
-        // Por simplicidad, este ejemplo solo devuelve un mensaje de éxito
-        // ---------- LOGIN ----------
+    private final JwtUtils jwtUtils; // 👈 1. Asegúrate de que siga inyectado
+
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
@@ -49,7 +47,6 @@ public class AuthService {
         return buildAuthResponse(user, "Login exitoso");
     }
 
-    // ---------- REGISTER ----------
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -72,9 +69,10 @@ public class AuthService {
         user.setRoles(resolveRoles(request.getRoles()));
         user.setServicios(resolveServicios(request.getServicios()));
 
-        userRepository.save(user);
+        // 👈 2. CAMBIO CLAVE: Usar saveAndFlush para forzar el guardado en BD en Java 25
+        User savedUser = userRepository.saveAndFlush(user);
 
-        return buildAuthResponse(user, "Usuario registrado con éxito");
+        return buildAuthResponse(savedUser, "Usuario registrado con éxito");
     }
 
     // ---------- Helpers privados ----------
@@ -113,17 +111,21 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user, String message) {
-        Set<String> roleNames = user.getRoles().stream()
-                .map(Role::getNombre_rol)
-                .collect(Collectors.toSet());
+        
+        // 👈 3. Generación explícita del Token
+        String token = jwtUtils.generateToken(user);
 
-        Set<String> serviceNames = user.getServicios().stream()
-                .map(ServiceEntity::getNombreServicio)
-                .collect(Collectors.toSet());
+        Set<String> roleNames = (user.getRoles() != null) 
+                ? user.getRoles().stream().map(Role::getNombre_rol).collect(Collectors.toSet())
+                : new HashSet<>();
+
+        Set<String> serviceNames = (user.getServicios() != null)
+                ? user.getServicios().stream().map(ServiceEntity::getNombreServicio).collect(Collectors.toSet())
+                : new HashSet<>();
 
         return AuthResponse.builder()
                 .id(user.getId())
-                .token(null) // placeholder: se completa en el paso de JWT
+                .token(token) // 👈 Retornamos la cadena generada
                 .type("Bearer")
                 .username(user.getUsername())
                 .nombre(user.getNombre())
