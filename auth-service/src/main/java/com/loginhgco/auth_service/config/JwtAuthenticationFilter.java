@@ -35,6 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. Obtener el token del encabezado "Authorization"
         String token = parseJwt(request);
 
+        // LOG DE CONTROL: Muestra en la consola de Spring Boot si está llegando el header
+        if (token == null) {
+            System.out.println("⚠️ JWT Filter: No se encontró header Authorization en: " + request.getRequestURI());
+        } else {
+            System.out.println("🔑 JWT Filter: Token detectado para la ruta: " + request.getRequestURI());
+        }
+
         // 2. Validar el token
         if (token != null && jwtUtils.validateToken(token)) {
             String username = jwtUtils.getUsernameFromToken(token);
@@ -53,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 5. Establecer el usuario autenticado en el contexto de Spring Security
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("✅ JWT Filter: Usuario '" + username + "' autenticado con éxito.");
         }
 
         // Continuar con la cadena de filtros

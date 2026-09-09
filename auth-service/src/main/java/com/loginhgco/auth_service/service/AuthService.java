@@ -29,7 +29,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final ServiceRepository serviceRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils; // 👈 1. Asegúrate de que siga inyectado
+    private final JwtUtils jwtUtils; // 👈 Inyección de JwtUtils
 
     public AuthResponse login(LoginRequest request) {
 
