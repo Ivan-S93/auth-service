@@ -29,10 +29,10 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // 1. Guardar Roles iniciales
-        Role rolAdmin = getOrCreateRole("ROL_ADMINISTRADOR");
-        Role rolMedico = getOrCreateRole("ROL_MEDICO");
-        Role rolNutricionista = getOrCreateRole("ROL_NUTRICIONISTA");
-        Role rolUsuario = getOrCreateRole("ROL_USUARIO");
+        Role rolAdmin = getOrCreateRole("ADMINISTRADOR");
+        Role rolMedico = getOrCreateRole("MEDICO");
+        Role rolNutricionista = getOrCreateRole("NUTRICIONISTA");
+        Role rolUsuario = getOrCreateRole("USUARIO");
 
         // 2. Guardar Servicios iniciales
         ServiceEntity servicioTic = getOrCreateService("TIC");
@@ -51,7 +51,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setDescripcion("Administrador inicial");
 
             // Asignar rol ROL_ADMINISTRADOR
-            Role adminRole = getOrCreateRole("ROL_ADMINISTRADOR");
+            Role adminRole = getOrCreateRole("ADMINISTRADOR");
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
             admin.setRoles(roles);
