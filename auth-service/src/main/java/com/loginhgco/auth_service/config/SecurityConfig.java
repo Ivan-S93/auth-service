@@ -29,8 +29,11 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
             
-            // Reemplaza momentáneamente cualquier regla .hasRole() o .hasAuthority() por .authenticated()
-            .requestMatchers("/api/users/**").authenticated() 
+            // Exige la autoridad ROL_ADMINISTRADOR para cualquier acción en /api/users
+            .requestMatchers("/api/users/**").hasAuthority("ADMINISTRADOR")
+            
+            // Endpoints de catálogos (Roles y Servicios) para cualquier usuario autenticado
+            .requestMatchers("/api/roles/**", "/api/servicios/**").authenticated()
             
             .anyRequest().authenticated()
         )

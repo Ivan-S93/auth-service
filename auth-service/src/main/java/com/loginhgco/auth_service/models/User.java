@@ -1,4 +1,4 @@
-// Este archivo definira la tabla de llos usuarios y la relacion de muchos a muchos con la tabla de roles
+// Este archivo definira la tabla de los usuarios y la relacion de muchos a muchos con la tabla de roles
 // asi un usuario puede tener varios roles si necesita.
 
 package com.loginhgco.auth_service.models;
@@ -14,10 +14,11 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
@@ -41,7 +42,7 @@ public class User {
     @Column(length = 255)
     private String descripcion;
 
-    // Relacion muchos a muchos con roles
+    // Relacion muchos a muchos con roles (se mantiene EAGER para cargar los permisos en login)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "usuario_roles",
@@ -50,14 +51,12 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    // Relacion muchos a muchos con servicios ( quirofano, nutricion, clinia medica, urgencias, etc)
-    @ManyToMany(fetch = FetchType.EAGER)
+    // Relacion muchos a muchos con servicios (se pasa a LAZY para evitar el ConcurrentModificationException)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "usuario_servicios",
-        joinColumns = @JoinColumn(name = "usuario_id"),
-        inverseJoinColumns = @JoinColumn(name = "servicio_id")
-        )
+            name = "usuario_servicios",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
     private Set<ServiceEntity> servicios = new HashSet<>();
-
 }
-

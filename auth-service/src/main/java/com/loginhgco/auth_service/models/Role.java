@@ -5,18 +5,23 @@ package com.loginhgco.auth_service.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore; 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
 @Entity
 @Table(name = "roles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -26,4 +31,3 @@ public class Role {
     @JsonIgnore 
     private Set<User> usuarios = new HashSet<>();
 }
-

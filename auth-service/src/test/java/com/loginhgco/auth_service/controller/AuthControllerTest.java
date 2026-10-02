@@ -33,7 +33,7 @@ class AuthControllerTest {
         AuthResponse response = response("Login exitoso");
         when(authService.login(request)).thenReturn(response);
 
-        ResponseEntity<AuthResponse> result = authController.login(request);
+        ResponseEntity<AuthResponse> result = (ResponseEntity<AuthResponse>) authController.login(request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(response, result.getBody());
